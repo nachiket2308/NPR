@@ -1,0 +1,30 @@
+<apex:page standardController="Opportunity" extensions="OpportunityNewOverride">
+ 
+ 	<apex:form >
+	 	<apex:pageMessages />
+		<apex:pageBlock id="oppDetails" title="Opportunity Details" >
+			<apex:pageblockSection collapsible="false"  columns="2">
+				<apex:inputField value="{!Opportunity.AccountId}" required="true"/>
+				 
+				 <apex:pageBlockSectionItem >
+					<apex:outputLabel value="Type" for="type"/>
+					<apex:outputPanel layout="block" styleClass="requiredInput">
+					<apex:outputPanel layout="block" styleClass="requiredBlock"/>
+					<apex:selectList value="{!opportunity.Type}" required="True" size="1" id="type">
+						<apex:selectOption itemValue="" itemLabel="--None--"/>
+  						<apex:selectOption itemValue="PPF" itemLabel="PPF"/>
+  						<apex:selectOption itemValue="MSA" itemLabel="MSA"/>
+					</apex:selectList>
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>
+				
+				<apex:inputField value="{!Opportunity.CloseDate}" required="true"/>
+				<apex:inputField value="{!Opportunity.Status2__c}" required="true"/>
+				
+				<apex:inputField value="{!Opportunity.End_Date__c}" required="true"/>
+			</apex:pageblockSection>
+			<apex:commandButton action="{!Cancel}" value="Cancel" />
+	 		<apex:commandButton action="{!Next}" value="Next" />
+	 	</apex:pageBlock>
+ 	</apex:form>
+</apex:page>

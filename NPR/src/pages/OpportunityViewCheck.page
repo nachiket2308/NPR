@@ -1,0 +1,12 @@
+<apex:page standardController="Opportunity" extensions="OpportunityViewCheck" >
+
+<apex:includeScript value="{!$Resource.JQuery}"/>
+<script>
+	$( document ).ready(function() {
+		if({!oppType}=='PPF' || {!oppType}=='MSA')
+		{
+			window.top.location.href = "/apex/OpportunityViewOverride?id={!oppId}";
+		}
+	});
+</script>
+</apex:page>

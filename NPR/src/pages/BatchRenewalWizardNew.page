@@ -1,0 +1,41 @@
+<apex:page standardController="Batch_Renewal__c" extensions="BatchRenewalWizardController">
+
+<script>
+    	 function renewClick()
+         {
+         	var strconfirm = confirm("Are you sure you want to run a renewal batch?");
+			if (strconfirm == true)
+            {
+				renew();
+            }
+         }
+     
+	</script>
+	
+<apex:form >
+		<apex:actionFunction name="renew" action="{!ProcessRenewals}" />
+		
+        <apex:pageMessages />
+        <apex:pageBlock id="batchRenewalDetails" title="Batch Renewal Wizard" >
+            <apex:pageblockSection collapsible="false"  columns="1">
+                <apex:selectList value="{!Batch_Renewal__c.Renewal_Type__c}" size="1">
+                    <apex:selectOption itemValue="" itemLabel="--None--"/>
+                    <apex:selectOption itemValue="PPF" itemLabel="PPF"/>
+                    <apex:selectOption itemValue="MSA" itemLabel="MSA"/>
+                </apex:selectList>
+                
+                <apex:outputField value="{!Batch_Renewal__c.Fiscal_Year__c}" />
+                       
+            </apex:pageblockSection>
+              
+            <apex:commandButton action="{!ProcessRenewals}" value="Process Renewals" rendered="{!!recordHasBeenRenewed}" />
+            <!--<apex:commandButton onClick="renewClick()" value="Process Renewals" rendered="{!!recordHasBeenRenewed}" />-->
+            <br/>
+            <apex:outputText value="Batch Renewal is being processed and Opportunities are being created, please check " rendered="{!recordHasBeenRenewed}" />
+            <apex:outputLink value="/{!Batch_Renewal__c.Id}" id="theLink" rendered="{!recordHasBeenRenewed}">the newly created Batch Renewal record</apex:outputLink>
+            <apex:outputText value=" in a few minutes " rendered="{!recordHasBeenRenewed}" />
+                                
+        </apex:pageBlock>
+    </apex:form>
+
+</apex:page>

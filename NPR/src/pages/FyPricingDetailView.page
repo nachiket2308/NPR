@@ -1,0 +1,440 @@
+<apex:page standardController="FY_Pricing_Detail__c" extensions="FyPricingDetailViewController">
+<apex:stylesheet value="{!$Resource.FyPricingDetailViewCSS}"/>
+    
+            <div> <label class="pageHeaderTitle" > Fiscal Year Pricing Detail </label></div>
+           
+            <div class="divSectionHeader">
+                <label class="labSectionHeader">Pricing Detail Information</label>
+            </div>
+            <div >
+                <table Class="tableBorderSpacingHeader">
+                    <div>
+                        
+                    <tr>
+                        <td>
+                            <label class="fieldLabel" >{!$ObjectType.FY_Pricing_Detail__c.fields.Station__c.label}</label>
+                        </td>
+                        <td>
+                            <apex:outputField value="{!objFyPricingDetail.Station__c}" />
+                        </td>
+                        <div>
+                        <td>
+                            
+                            <apex:form >
+                                <apex:commandButton action="{!refreshFyPricingDetailValues}" value="Refresh"   
+                                                    styleClass="refreshbutton" 
+                                                    onclick="if(!confirm('Do you want to refresh rate factors and base value?')){return false;}" 
+                                                    reRender="MeFYPricingRateId,AllATCFYPricingRateId" />
+                            </apex:form> 
+                            
+                        </td>
+                        </div>
+                    </tr>   
+                    <tr>
+                        <td>
+                            <label class="fieldLabel" >{!$ObjectType.FY_Pricing_Detail__c.fields.Fiscal_Year__c.label}</label>
+                        </td>
+                        <td >
+                            <apex:outputField value="{!objFyPricingDetail.Fiscal_Year__c}" />
+                        </td>
+                        <td></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <label class="fieldLabel" >{!$ObjectType.FY_Pricing_Detail__c.fields.TSR__c.label}</label>
+                        </td>
+                        <td>
+                            <apex:outputField value="{!objFyPricingDetail.TSR__c}" />
+                        </td>
+                        <td></td>
+                    </tr>       
+                    
+                    <tr>
+                        <td>
+                            <label class="fieldLabel" >{!$ObjectType.FY_Pricing_Detail__c.fields.TSR_Level__c.label}</label>
+                        </td>
+                        <td>
+                            <apex:outputField value="{!objFyPricingDetail.TSR_Level__c}" />
+                        </td>
+                        <td></td>
+                    </tr>
+                     <tr>
+                        <td>
+                            <label class="fieldLabel" >{!$ObjectType.FY_Pricing_Detail__c.fields.Discount_Type__c.label}</label>
+                        </td>
+                        <td>
+                            <apex:outputField value="{!objFyPricingDetail.Discount_Type__c}" />
+                        </td>
+                        <td></td>
+                    </tr>   
+                    </div>
+                    
+                    
+                </table>
+               
+            </div>
+            
+            <div class="divSectionHeader" >
+                <label class="labSectionHeader">Morning Edition Fees</label>
+            </div>
+          
+            <div id="divMeCheckbox" class="divMeCheckbox">
+            
+                <div>
+                    <apex:outputLabel styleClass="fieldLabel" value="{!$ObjectType.FY_Pricing_Detail__c.fields.ME_News_Mag_Pricing_Status__c.label}"/>
+                </div>
+                <div class="divMeCheckboxFieldView">
+                    <apex:outputField styleClass="fieldLabel" value="{!objFyPricingDetail.ME_News_Mag_Pricing_Status__c}"/>
+                </div>
+                
+                <div class="divMeCheckboxFieldView">
+                    <apex:outputLabel styleClass="fieldLabel" value="No Listener Hour Data"/>
+                </div>
+                <div class="divMeCheckboxFieldView">
+                    <apex:outputField styleClass="fieldLabel" value="{!objFyPricingDetail.ME_No_Listener_Hour_Data__c}"/>
+                </div>
+                <div class="divMeCheckboxFieldView">
+                    <apex:outputLabel styleClass="fieldLabel" value="Will Not Purchase News Magazine"/>
+                </div>
+                <div class="divMeCheckboxFieldView">
+                    <apex:outputField styleClass="fieldLabel" value="{!objFyPricingDetail.ME_Will_Not_Purchase_News_Mag__c}"/>
+                </div>
+                
+            </div>
+            
+             <apex:outputPanel id="MeFYPricingRateId">
+            <table class="tableMEfyPricing">
+                
+                <tr class="tableMEfyPricing">
+                    <th  class="tableMEfyPricing tableHeaaderMEFees"></th>
+                    <th  class="tableMEfyPricing tableHeaaderMEFees" >Fall {!strPreviousFiscalYear}</th>
+                    <th  class="tableMEfyPricing tableHeaaderMEFees">Spring {!strPreviousFiscalYear}</th>
+                    <th  class="tableMEfyPricing tableHeaaderMEFees" >Fall {!strNextPreviousFiscalYear}</th>
+                    <th  class="tableMEfyPricing tableHeaaderMEFees">Spring {!strNextPreviousFiscalYear}</th>
+                </tr>
+            
+                <tr class="tableMEfyPricing">
+                    <td class="tableRow">PPM Hours</td>
+                    <td class="tableMEfyPricing" >{!objFyPricingDetail.ME_PPM_Last_Period__c}</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ME_PPM_2nd_Recent__c}</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ME_PPM_3rd_Recent__c}</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ME_PPM_4th_Recent__c}</td>
+                </tr>
+                
+                <tr class="tableMEfyPricing">
+                    <td class="tableRow" >PPM Price</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ME_PPM_Rate_Calc_Last__c}</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ME_PPM_Rate_Calc_2nd_Recent__c}</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ME_PPM_Rate_Calc_3rd_Recent__c}</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ME_PPM_Rate_Calc_4th_Recent__c}</td>
+                </tr>
+                
+                <tr class="tableMEfyPricing">
+                    <td class="tableRow" >LH Hours</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ME_LH_Last_Period__c}</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ME_LH_2nd_Recent__c}</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ME_LH_3rd_Recent__c}</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ME_LH_4th_Recent__c}</td>
+                </tr>
+                
+                <tr class="tableMEfyPricing">
+                    <td class="tableRow">LH Price</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ME_LH_Rate_Calc_Last__c}</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ME_LH_Rate_Calc_2nd_Recent__c}</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ME_LH_Rate_Calc_3rd_Recent__c}</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ME_LH_Rate_Calc_4th_Recent__c}</td>
+                    
+                </tr>
+                
+                <tr>
+                    <td class="tableRow" >Sum of PPM and LH Price</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ME_Rate_Sum_Last_Period__c}</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ME_Rate_Sum_2nd_Recent__c}</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ME_Rate_Sum_3rd_Recent__c}</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ME_Rate_Sum_4th_Recent__c}</td>
+                </tr>
+                
+            </table>
+            
+             
+               <apex:pageMessages rendered="{!isMEError}"/>      
+                <table class="tableBorderSpacing" >
+                        <p></p>
+                        <tr>
+                            <td>
+                                <label class="fieldLabel" >Total of Fiscal Periods</label>
+                            </td>
+                            <td class="tdPeriodRate">
+                                <apex:outputField value="{!objFyPricingDetail.ME_Total_of_Fiscal_Periods__c}"  />
+                            </td>
+                            <td>
+                                <label class="fieldLabel" >PPM Rate</label>
+                            </td>
+                            <td class="tdPeriodRate">
+                                <apex:outputField value="{!objFyPricingDetail.ME_PPM_Rate__c}" />
+                            </td>
+                            
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                <label class="fieldLabel" >Average of Fiscal Periods</label>
+                            </td>
+                            <td class="tdPeriodRate">
+                                <apex:outputField value="{!objFyPricingDetail.ME_Average_of_Fiscal_Periods__c}"   />
+                            </td>
+                            <td>
+                                <label class="fieldLabel" >LH Rate</label>
+                            </td>
+                            <td class="tdPeriodRate">
+                                <apex:outputField value="{!objFyPricingDetail.ME_LH_Rate__c}"  />
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                <label class="fieldLabel" >Uncapped Price</label>
+                            </td>
+                            <td class="tdPeriodRate">
+                                <apex:outputField value="{!objFyPricingDetail.ME_Uncapped_Price__c}"  label="" />
+                            </td>
+                            <td>
+                                <label class="fieldLabel" >Base Price</label>
+                            </td>
+                            <td class="tdPeriodRate" >
+                                <apex:outputField value="{!objFyPricingDetail.ME_Base_Price__c}"   />
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                <label class="fieldLabel" >Last FY Price</label>
+                            </td>
+                            <td>
+                                <apex:outputField value="{!objFyPricingDetail.ME_Last_FY_Price__c}"  />
+                            </td>
+<!--                             <td> -->
+<!--                                 <label class="fieldLabel" >Cap</label> -->
+<!--                             </td> -->
+<!--                             <td> -->
+<!--                                 <apex:outputField value="{!objFyPricingDetail.ME_Cap_Factor__c}"  /> -->
+<!--                             </td> -->
+                            <!--This code added by Suhas -->
+                            <td>
+                                <label class = "fieldLabel">Ceiling Cap</label>
+                            </td>
+                            <td>
+                                <apex:outputField value="{!objMENewsMagSetting.Ceiling_Cap_Factor__c}"  />
+                            </td>
+                            <!-- Added code ends here -->
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                <label class="fieldLabel" >Capped/Final Price</label>
+                            </td>
+                            <td>
+                                <apex:outputField value="{!objFyPricingDetail.ME_Capped_Price__c}"  />
+                            </td>
+                            <!--This code added by Suhas -->
+                            <td>
+                                <label class = "fieldLabel">Floor Cap</label>
+                            </td>
+                            <td>
+                                <apex:outputField value="{!objMENewsMagSetting.Floor_Cap_Factor__c}"  />
+                            </td>
+                            <!-- Added code ends here -->
+                            
+                        </tr>
+                        
+                </table>
+            </apex:outputPanel>
+            <span style="display:inline-block; width: 10%;"></span>     
+            <!-- All Thing Consider Fee  Section--> 
+            <div class="divSectionHeader">
+                <label class="labSectionHeader">All Things Considered Fees</label>
+            </div>
+            
+           <div id="divAtcCheckbox" class="divMeCheckbox">
+                           
+                  <div >
+                      <apex:outputLabel styleClass="fieldLabel" value="{!$ObjectType.FY_Pricing_Detail__c.fields.ATC_News_Mag_Pricing_Status__c.label}"/>
+                  </div>
+                  <div class="divMeCheckboxFieldView">
+                      <apex:outputField styleClass="fieldLabel" value="{!objFyPricingDetail.ATC_News_Mag_Pricing_Status__c}"/>
+                  </div>
+                  
+                  <div class="divMeCheckboxFieldView">
+                      <apex:outputLabel styleClass="fieldLabel" value="No Listener Hour Data"/>
+                  </div>
+                  <div class="divMeCheckboxFieldView">
+                      <apex:outputField styleClass="fieldLabel" value="{!objFyPricingDetail.ATC_No_Listener_Hour_Data__c}"/>
+                  </div>
+                  <div class="divMeCheckboxFieldView">
+                      <apex:outputLabel styleClass="fieldLabel" value="Will Not Purchase News Magazine"/>
+                  </div>
+                  <div class="divMeCheckboxFieldView">
+                      <apex:outputField styleClass="fieldLabel" value="{!objFyPricingDetail.ATC_Will_Not_Purchase_News_Mag__c}"/>
+                  </div>
+              </div>
+            
+            <apex:outputPanel id="AllATCFYPricingRateId"> 
+            <table class="tableMEfyPricing">
+                
+                <tr>
+                    <th   class="tableMEfyPricing tableHeaaderMEFees"></th>
+                    <th   class="tableMEfyPricing tableHeaaderMEFees">Fall {!strPreviousFiscalYear} </th>
+                    <th   class="tableMEfyPricing tableHeaaderMEFees ">Spring {!strPreviousFiscalYear}</th>
+                    <th   class="tableMEfyPricing tableHeaaderMEFees ">Fall {!strNextPreviousFiscalYear}</th>
+                    <th   class="tableMEfyPricing tableHeaaderMEFees">Spring {!strNextPreviousFiscalYear}</th>
+                </tr>
+            
+                <tr>
+                    <td class="tableRow">PPM Hours</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ATC_PPM_Last_Period__c}</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ATC_PPM_2nd_Recent__c}</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ATC_PPM_3rd_Recent__c}</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ATC_PPM_4th_Recent__c}</td>
+                </tr>
+                
+                <tr class="tableMEfyPricing">
+                    <td class="tableRow" >PPM Price</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ATC_PPM_Rate_Calc_Last__c}</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ATC_PPM_Rate_Calc_2nd_Recent__c}</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ATC_PPM_Rate_Calc_3rd_Recent__c}</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ATC_PPM_Rate_Calc_4th_Recent__c}</td>
+                </tr>
+                
+                <tr class="tableMEfyPricing">
+                    <td class="tableRow">LH Hours</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ATC_LH_Last_Period__c}</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ATC_LH_2nd_Recent__c}</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ATC_LH_3rd_Recent__c}</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ATC_LH_4th_Recent__c}</td>
+                </tr>
+                
+                <tr class="tableMEfyPricing">
+                    <td class="tableRow" >LH Price</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ATC_LH_Rate_Calc_Last__c}</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ATC_LH_Rate_Calc_2nd_Recent__c}</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ATC_LH_Rate_Calc_3rd_Recent__c}</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ATC_LH_Rate_Calc_4th_Recent__c}</td>
+                    
+                </tr>
+                
+                <tr class="tableMEfyPricing">
+                    <td class="tableRow">Sum of PPM and LH Price</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ATC_Rate_Sum_Last_Period__c}</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ATC_Rate_Sum_2nd_Recent__c}</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ATC_Rate_Sum_3rd_Recent__c}</td>
+                    <td class="tableMEfyPricing">{!objFyPricingDetail.ATC_Rate_Sum_4th_Recent__c}</td>
+                </tr>
+            </table>
+            
+            <apex:outputPanel id="ATCFYPricingRateId"> 
+                <apex:pageMessages rendered="{!isATCError}"/>
+                <table class="tableBorderSpacing">
+                        <p></p>
+                        <tr>
+                            <td>
+                                <label class="fieldLabel" >Total of Fiscal Periods</label>
+                            </td>
+                            <td class="tdPeriodRate">
+                                <apex:outputField value="{!objFyPricingDetail.ATC_Total_of_Fiscal_Periods__c}"  />
+                            </td>
+                            <td>
+                                <label class="fieldLabel" >PPM Rate</label>
+                            </td>
+                            <td class="tdPeriodRate">
+                                <apex:outputField value="{!objFyPricingDetail.ATC_PPM_Rate__c}" />
+                            </td>
+                            
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                <label class="fieldLabel" >Average of Fiscal Periods</label>
+                            </td>
+                            <td class="tdPeriodRate">
+                                <apex:outputField value="{!objFyPricingDetail.ATC_Average_of_Fiscal_Periods__c}"   />
+                            </td>
+                            <td>
+                                <label class="fieldLabel" >LH Rate</label>
+                            </td>
+                            <td class="tdPeriodRate">
+                                <apex:outputField value="{!objFyPricingDetail.ATC_LH_Rate__c}"  />
+                                
+                            </td>
+                            
+                        </tr>
+                        
+                        
+                        <tr>
+                            <td>
+                                <label class="fieldLabel" >Uncapped Price</label>
+                            </td>
+                            <td class="tdPeriodRate">
+                                <apex:outputField value="{!objFyPricingDetail.ATC_Uncapped_Price__c}"   />
+                            </td>
+                            <td>
+                                <label class="fieldLabel" >Base Price</label>
+                            </td>
+                            <td class="tdPeriodRate">
+                                <apex:outputField value="{!objFyPricingDetail.ATC_Base_Price__c}"/>
+                                
+                            </td>
+                            
+                        </tr>
+                        
+                        
+                        <tr>
+                            <td>
+                                <label class="fieldLabel" >Last FY Price</label>
+                            </td>
+                            <td>
+                                <apex:outputField value="{!objFyPricingDetail.ATC_Last_FY_Price__c}"  />
+                            </td>
+<!--                             <td> -->
+<!--                                 <label class="fieldLabel" >Cap</label> -->
+<!--                             </td> -->
+<!--                             <td> -->
+<!--                                 <apex:outputField value="{!objFyPricingDetail.ATC_Cap_Factor__c}"  /> -->
+                                
+<!--                             </td> -->
+
+                            <!-- This is added by Suhas -->
+                            <td>
+                                <label class="fieldLabel" >Ceiling Cap</label>
+                            </td>
+                            <td>
+                                <apex:outputField value="{!objATCNewsMagSetting.Ceiling_Cap_Factor__c}"  />
+                            </td>
+                            <!-- Added code ends here -->
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                <label class="fieldLabel" >Capped/Final Price</label>
+                            </td>
+                            <td>
+                                <apex:outputField value="{!objFyPricingDetail.ATC_Capped_Price__c}"  />
+                            </td>
+                            <!-- This is added by Suhas -->
+                            <td>
+                                <label class="fieldLabel" >Floor cap</label>
+                            </td>
+                            <td>
+                                <apex:outputField value="{!objATCNewsMagSetting.Floor_Cap_Factor__c}"  />
+                            </td>
+                            <!-- Ends here -->
+                        </tr>
+                </table>
+            </apex:outputPanel>
+            </apex:outputPanel>
+            <apex:form >
+              <div align="center">
+                <apex:commandButton action="{!callEditFyPricingDetail}" value="Edit"  StyleClass="buttonCornerEdit" />
+              </div>    
+            </apex:form> 
+</apex:page>

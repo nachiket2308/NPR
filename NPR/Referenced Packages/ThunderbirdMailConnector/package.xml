@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ThunderbirdMailConnector</fullName>
+    <apiAccessLevel>Unrestricted</apiAccessLevel>
+    <namespacePrefix>gromesoft2</namespacePrefix>
+    <types>
+        <members>ConnectorUser</members>
+        <members>ThunderbirdMailConnectorManager</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>ThunderbirdMailConnector</members>
+        <name>CustomApplication</name>
+    </types>
+    <types>
+        <members>ConnectorUser__c.lastAccessDate__c</members>
+        <members>ConnectorUser__c.todayAccessCount__c</members>
+        <members>ConnectorUser__c.userId__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>ConnectorUser__c</members>
+        <name>CustomObject</name>
+    </types>
+    <types>
+        <members>ConnectorUser__c-Présentation de PluginUser2</members>
+        <name>Layout</name>
+    </types>
+    <version>33.0</version>
+</Package>

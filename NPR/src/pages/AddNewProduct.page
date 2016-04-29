@@ -1,0 +1,23 @@
+<apex:page controller="AddNewProductController" >
+
+<apex:pageBlock id="addNewProd" title="Add New Product" >
+<apex:pageMessages id="pgmessageId"/>
+<apex:form id="formId">
+<div align="center">
+	<apex:selectList value="{!SelectedList}" multiselect="true" >
+            <apex:selectOptions value="{!ProductforOpportunity}"/>
+        </apex:selectList><p/>
+	<apex:CommandButton value="Cancel" action="{!clickCancel}" />
+	
+	<apex:CommandButton value="Next" action="{!clickNext}" reRender="formId,pgmessageId"  status="WaitingStatusId" /> 
+	<apex:actionStatus id="WaitingStatusId" >
+                <apex:facet name="start" >
+                  <img src="/img/loading.gif" />                    
+                </apex:facet>
+    </apex:actionStatus>
+	
+</div> 
+    
+ </apex:form>
+</apex:pageBlock>       
+</apex:page>

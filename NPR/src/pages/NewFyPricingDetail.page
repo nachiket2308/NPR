@@ -1,0 +1,245 @@
+<apex:page standardController="FY_Pricing_Detail__c" extensions="NewFyPricingDetailController">
+<!-- <apex:stylesheet value="{!$Resource.NewFyPricingDetailCSS}"/> -->
+<apex:stylesheet value="{!$Resource.FyPricingDetailViewCSS}"/>
+<style>
+</style>
+
+    <apex:form >
+        <div id="divMainContainer" class="mainContainer">
+            <apex:pageMessages id="errorMesssgeId"/>
+            <div id="divMainSection" class="centerAlign">
+            
+                <div>
+                    <label class="pageHeader">Fiscal Year Pricing Detail</label>
+                </div>
+                
+                <div id="divPricingDetailInfo">
+                    
+                    <div class="sectionHeader">
+                        <label class="sectionLabel">Pricing Detail Information</label>
+                    </div>
+                    
+                    <div class="divTable">
+                                
+                        <div class="divRow">
+                                    
+                            <div class="divCellHeader">
+                                <apex:outputLabel styleClass="fieldLabel" value="Station"/>
+                            </div>
+                            <div class="divCellHeader">
+                                <apex:inputField value="{!objFyPricingDetail.Station__c}"/>
+                            </div>
+                        </div>
+                        
+                        <div class="divRow">
+                                    
+                            <div class="divCellHeader">
+                                <apex:outputLabel styleClass="fieldLabel" value="Fiscal Year"/>
+                            </div>
+                            <div class="divCellHeader">
+                                <apex:inputField value="{!objFyPricingDetail.Fiscal_Year__c}"/>
+                            </div>
+                        </div>
+                    </div>                    
+                </div>
+                
+                <div id="divMeFees">
+                    
+                    <div class="sectionHeader">
+                        <label class="sectionLabel">Morning Edition Fees</label>
+                    </div>                                       
+                    
+                    <div id="divMeFields">                                             
+                        
+                        <div id="divMeCheckbox" class="divMeCheckbox">
+                            
+                            <div class="divMeCheckboxField">
+                                <apex:outputLabel styleClass="fieldLabel" value="No Listener Hour Data"/>
+                            </div>
+                            <div class="divMeCheckboxField">
+                                <apex:inputField styleClass="fieldLabel" value="{!objFyPricingDetail.ME_No_Listener_Hour_Data__c}"/>
+                            </div>
+                            <div class="divMeCheckboxField">
+                                <apex:outputLabel styleClass="fieldLabel" value="Will Not Purchase News Magazine"/>
+                            </div>
+                            <div class="divMeCheckboxField">
+                                <apex:inputField styleClass="fieldLabel" value="{!objFyPricingDetail.ME_Will_Not_Purchase_News_Mag__c}"/>
+                            </div>
+                        </div>
+                        
+                        <div id="divMeGrid">
+                        
+                            <table class="tablePricingDetail tableWidth">
+				
+				                <tr class="tablePricingDetail">
+					                <td class="tablePricingDetail cellWidth"></td>
+					                <td class="tablePricingDetail cellWidth" >
+					                    <label class="fieldLabel">Previous Spring</label>
+					                </td>
+					                <td class="tablePricingDetail cellWidth" >
+					                    <label class="fieldLabel">Previous Fall</label>
+					                </td>
+					                <td class="tablePricingDetail cellWidth" >
+					                    <label class="fieldLabel">2nd Previous Spring</label>
+					                </td>
+					                <td class="tablePricingDetail cellWidth" >
+					                    <label class="fieldLabel">2nd Previous Fall</label>
+					                </td>
+				                </tr>
+			
+				                <tr class="tablePricingDetail">
+					                
+					                <td class="tablePricingDetail cellWidth">
+					                    <label class="fieldLabel">PPM Hours</label>
+					                </td>
+					                <td class="tablePricingDetail cellWidth" >
+					                    <apex:inputField value="{!objFyPricingDetail.ME_PPM_Last_Period__c}"/>
+					                </td>
+					                <td class="tablePricingDetail cellWidth" >
+					                    <apex:inputField value="{!objFyPricingDetail.ME_PPM_2nd_Recent__c}"/>
+					                </td>
+					                <td class="tablePricingDetail cellWidth" >
+					                    <apex:inputField value="{!objFyPricingDetail.ME_PPM_3rd_Recent__c}"/>
+					                </td>
+					                <td class="tablePricingDetail cellWidth" >
+					                    <apex:inputField value="{!objFyPricingDetail.ME_PPM_4th_Recent__c}"/>
+					                </td>
+				                </tr>
+				
+				                <tr class="tablePricingDetail">
+					                
+					                <td class="tablePricingDetail cellWidth">
+					                    <label class="fieldLabel">LH Hours</label>
+					                </td>
+					                <td class="tablePricingDetail cellWidth" >
+					                    <apex:inputField value="{!objFyPricingDetail.ME_LH_Last_Period__c}"/>
+					                </td>
+					                <td class="tablePricingDetail cellWidth" >
+					                    <apex:inputField value="{!objFyPricingDetail.ME_LH_2nd_Recent__c}"/>
+					                </td>
+					                <td class="tablePricingDetail cellWidth" >
+					                    <apex:inputField value="{!objFyPricingDetail.ME_LH_3rd_Recent__c}"/>
+					                </td>
+					                <td class="tablePricingDetail cellWidth" >
+					                    <apex:inputField value="{!objFyPricingDetail.ME_LH_4th_Recent__c}"/>
+					                </td>
+				                </tr>				
+			                </table>                                                   
+                        </div>
+                        
+                        <div id="divMeFY" class="divMeCheckbox">
+                            
+                            <div class="divMeCheckboxField">
+                                <apex:outputLabel styleClass="fieldLabel" value="Last FY Price Override"/>
+                            </div>
+                            <div class="divMeCheckboxField">
+                                <apex:inputField value="{!objFyPricingDetail.ME_Last_FY_Price__c}"/>
+                            </div>                                                       
+                        </div>                                               
+                    </div>
+                </div>
+                
+                <div id="divAtcFees">
+                    
+                    <div class="sectionHeader">
+                        <label class="sectionLabel">All Things Considered Fees</label>
+                    </div>
+                                        
+                    <div id="divAtcFields">
+                    
+                        <div id="divAtcCheckbox" class="divMeCheckbox">
+                            
+                            <div class="divMeCheckboxField">
+                                <apex:outputLabel styleClass="fieldLabel" value="No Listener Hour Data"/>
+                            </div>
+                            <div class="divMeCheckboxField">
+                                <apex:inputField styleClass="fieldLabel" value="{!objFyPricingDetail.ATC_No_Listener_Hour_Data__c}"/>
+                            </div>
+                            <div class="divMeCheckboxField">
+                                <apex:outputLabel styleClass="fieldLabel" value="Will Not Purchase News Magazine"/>
+                            </div>
+                            <div class="divMeCheckboxField">
+                                <apex:inputField styleClass="fieldLabel" value="{!objFyPricingDetail.ATC_Will_Not_Purchase_News_Mag__c}"/>
+                            </div>
+                        </div>
+                        
+                        <div id="divAtcGrid">
+                        
+                            <table class="tablePricingDetail tableWidth">
+				
+				                <tr class="tablePricingDetail">
+					                <td class="tablePricingDetail cellWidth"></td>
+					                <td class="tablePricingDetail cellWidth" >
+					                    <label class="fieldLabel">Previous Spring</label>
+					                </td>
+					                <td class="tablePricingDetail cellWidth" >
+					                    <label class="fieldLabel">Previous Fall</label>
+					                </td>
+					                <td class="tablePricingDetail cellWidth" >
+					                    <label class="fieldLabel">2nd Previous Spring</label>
+					                </td>
+					                <td class="tablePricingDetail cellWidth" >
+					                    <label class="fieldLabel">2nd Previous Fall</label>
+					                </td>
+				                </tr>
+			
+				                <tr class="tablePricingDetail">
+					                
+					                <td class="tablePricingDetail cellWidth">
+					                    <label class="fieldLabel">PPM Hours</label>
+					                </td>
+					                <td class="tablePricingDetail cellWidth" >
+					                    <apex:inputField value="{!objFyPricingDetail.ATC_PPM_Last_Period__c}"/>
+					                </td>
+					                <td class="tablePricingDetail cellWidth" >
+					                    <apex:inputField value="{!objFyPricingDetail.ATC_PPM_2nd_Recent__c}"/>
+					                </td>
+					                <td class="tablePricingDetail cellWidth" >
+					                    <apex:inputField value="{!objFyPricingDetail.ATC_PPM_3rd_Recent__c}"/>
+					                </td>
+					                <td class="tablePricingDetail cellWidth" >
+					                    <apex:inputField value="{!objFyPricingDetail.ATC_PPM_4th_Recent__c}"/>
+					                </td>
+				                </tr>
+				
+				                <tr class="tablePricingDetail">
+					                
+					                <td class="tablePricingDetail cellWidth">
+					                    <label class="fieldLabel">LH Hours</label>
+					                </td>
+					                <td class="tablePricingDetail cellWidth" >
+					                    <apex:inputField value="{!objFyPricingDetail.ATC_LH_Last_Period__c}"/>
+					                </td>
+					                <td class="tablePricingDetail cellWidth" >
+					                    <apex:inputField value="{!objFyPricingDetail.ATC_LH_2nd_Recent__c}"/>
+					                </td>
+					                <td class="tablePricingDetail cellWidth" >
+					                    <apex:inputField value="{!objFyPricingDetail.ATC_LH_3rd_Recent__c}"/>
+					                </td>
+					                <td class="tablePricingDetail cellWidth" >
+					                    <apex:inputField value="{!objFyPricingDetail.ATC_LH_4th_Recent__c}"/>
+					                </td>
+				                </tr>				
+			                </table>                                                   
+                        </div>
+                        
+                        <div id="divAtcFY" class="divMeCheckbox">
+                            
+                            <div class="divMeCheckboxField">
+                                <apex:outputLabel styleClass="fieldLabel" value="Last FY Price Override"/>
+                            </div>
+                            <div class="divMeCheckboxField">
+                                <apex:inputField value="{!objFyPricingDetail.ATC_Last_FY_Price__c}"/>
+                            </div>                                                       
+                        </div>                                           
+                    </div>
+                </div>                               
+            </div>
+                
+            <div class="centerAlignContents">                    
+                <apex:commandButton value="Save" action="{!savePricingDetail}" reRender="errorMesssgeId"/>
+                <apex:commandButton value="Cancel" action="{!cancel}"/>                    
+            </div>
+        </div>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,428 @@
+<apex:page standardController="Opportunity" extensions="OpportunityViewOverride" >
+
+    <script>         
+         function SFDCJumpTo(destination) {
+            window.location.hash='#'+destination;
+         }
+         
+         function removeAnchor() {
+            window.location.hash='';
+         }
+    </script>
+    
+    <a name="topofpage" />
+    <apex:form id="theForm">
+        
+        <apex:actionFunction name="refreshClick" action="{!refreshClick}" rerender="theForm" />
+        <apex:actionFunction name="renewClick" action="{!renewClick}"  />
+        <!--<apex:actionFunction name="refresh" action="{!refresh}" >
+              <apex:param name="keepOverrides" value="false" />
+        </apex:actionFunction>
+        <apex:actionFunction name="refreshKeepOverrides" action="{!refresh}" >
+            <apex:param name="keepOverrides" value="true" />
+        </apex:actionFunction>-->
+        
+        <apex:pageMessages />   
+        
+        <apex:pageBlock title="Opportunity Details" rendered="{!Opportunity.Record_Locked__c}">
+             <apex:pageMessage summary="Record is currently locked. " severity="warning" strength="3" />
+        </apex:pageBlock>
+        
+        <apex:pageBlock id="oppDetails" title="Opportunity Details" rendered="{!!Opportunity.Record_Locked__c}">
+            <apex:pageBlockButtons location="both">
+                <apex:commandButton action="{!edit}" value="Edit" rendered="{!Opportunity.Show_Edit_Button__c }" />
+                <apex:outputPanel rendered="{!Opportunity.Refresh_Opportunity__c}">
+                    <input class="btn" type="button" value="Refresh" onClick="refreshClick()" />
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!Opportunity.Show_Renew_Button__c}">
+                    <input class="btn" type="button" value="Renew" onClick="renewClick()" />
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!Opportunity.Show_Add_Product_Button__c}"> 
+                    <input class="btn" type="button" value="Add Product" onClick="location.href='/apex/AddNewProduct?Id={!Opportunity.Id}'" />
+                </apex:outputPanel>
+            </apex:pageBlockButtons>
+            
+            <apex:outputPanel id="oppSection">
+                <apex:pageblockSection collapsible="false"  columns="2">
+                    <apex:outputField value="{!Opportunity.Name}" />
+                    <apex:outputField value="{!Opportunity.AccountId}" />
+                    
+                    <apex:outputField value="{!Opportunity.CloseDate}" />
+                    <apex:outputField value="{!Opportunity.Type}" />
+                    
+                    <apex:outputField value="{!Opportunity.End_Date__c}"/>
+                    <apex:outputField value="{!Opportunity.StageName}" />
+                </apex:pageblockSection>
+            </apex:outputPanel>
+            
+            <apex:outputPanel id="SummarySection">
+                <apex:pageblockSection collapsible="true" title="Summary Information" columns="2">
+                        <apex:outputField value="{!Opportunity.Sub_Total_Price__c}" />
+                        <apex:outputText value="" />
+                    
+                        <!--<apex:outputField value="{!Opportunity.Discount__c}" />-->
+                        <apex:outputText value="" />
+                        <apex:outputField value="{!Opportunity.Discount_Comments__c}" />
+                        
+                        <apex:outputField value="{!Opportunity.Discount_Type__c}" />
+                        <apex:outputText value="" />
+                        
+                        <apex:outputField value="{!Opportunity.Total_Override__c}" />
+                        <apex:outputField value="{!Opportunity.Total_Override_Comments__c}" />
+
+                        <apex:outputField value="{!Opportunity.Admin_Fee__c}" rendered="{!opportunity.Type='PPF'}"/>
+                        <apex:outputText value="" />
+
+                        <apex:outputField value="{!Opportunity.Admin_Fee_Override__c}" rendered="{!opportunity.Type='PPF'}"/>
+                        <apex:outputField value="{!Opportunity.Admin_Fee_Override_Comments__c}" rendered="{!opportunity.Type='PPF'}"/>
+
+                        <apex:outputField value="{!Opportunity.Total_Contract_Price__c}" />
+                        <apex:outputField value="{!Opportunity.Pricing_Tier__c}"/>
+
+                        <apex:outputField value="{!Opportunity.Original_Contract_Price__c}" />
+                        <apex:outputField value="{!Opportunity.Contract_Executed_Date__c}"/>
+
+                        <apex:outputField value="{!Opportunity.Include_In_Next_FY_Renewal__c}" />
+                        <apex:outputText value="" />
+
+                        <apex:outputField value="{!Opportunity.TSR_In_Hierarchy_PPF__c}" rendered="{!opportunity.Type='PPF'}"/>
+                        <apex:outputField value="{!Opportunity.Total_TSR_MSA__c}" rendered="{!opportunity.Type='MSA'}"/>
+                        <apex:outputField value="{!Opportunity.NPRStations_Validated__c}"/>
+                        <!-- Added by Suhas 
+                            According to Opportunity New, Repositioned and Relabeled Fields Detailed Design doc -->
+                        <apex:outputField value="{!Opportunity.Licensee__c}" rendered="{!opportunity.Type='MSA'}"/>
+                        
+                        <apex:outputField value="{!Opportunity.Total_Non_News_List_Price__c}" />
+                        <apex:outputField value="{!Opportunity.News_Mag_Uncapped_Price__c}" />
+                        
+                        <apex:outputField value="{!Opportunity.Total_Non_News_Discount_pct__c}" />
+                        <apex:outputField value="{!Opportunity.News_Mag_Capped_Final_Price__c}" />
+                        
+                        <apex:outputText value="" />
+                        <apex:outputField value="{!Opportunity.Delta_News_Mag_Uncapped_and_Final_Price__c}" />
+                        <!-- Code ends here -->
+                </apex:pageblockSection>    
+            </apex:outputPanel>
+            <!-- Added by Suhas 
+                            According to Opportunity New, Repositioned and Relabeled Fields Detailed Design doc -->
+            <apex:outputPanel id="PriorYearSummarySection">
+                <apex:pageblockSection collapsible="true" title="Prior Year Summary" columns="2">
+                    <apex:outputField value="{!Opportunity.Prior_Year_PPF_Contract_Price__c}" />
+                    <apex:outputField value="{!Opportunity.Prior_Year_Non_News_Discount__c}" />
+                    <apex:outputField value="{!Opportunity.Year_Over_Year_Change__c}" />
+                    <apex:outputField value="{!Opportunity.Year_over_Year_News_Mag_Change__c}" />
+                </apex:pageblockSection>
+            </apex:outputPanel>
+            <!-- Code ends here -->
+            <apex:pageblockSection collapsible="true" title="Included Stations" columns="1">
+                <apex:repeat value="{!stationNames}" var="stationName">
+                    <div class="station">{!stationName}</div>
+                </apex:repeat>
+            </apex:pageblockSection>
+            
+            <apex:repeat value="{!nrpBundles}" var="nrpBundle" rendered="{!opportunity.Type='MSA'}">
+                <apex:pageblockSection collapsible="true" title="{!nrpBundle.Product__r.Name}" columns="2" rendered="{!opportunity.Type='MSA'}">
+                        <apex:outputText value="" />
+                        <apex:outputField value="{!nrpBundle.Include_In_PPF_MSA__c}" />
+                        
+                        <apex:outputField value="{!nrpBundle.Base_Fee_Annualized__c}" />
+                        <apex:outputField value="{!nrpBundle.Air_Onboard_Date__c}" />
+                        
+                        <apex:outputField value="{!nrpBundle.License_Fee_Annualized__c}" />
+                        <apex:outputField value="{!nrpBundle.MSA_Cap__c}" />
+                        
+                        <apex:outputField value="{!nrpBundle.Last_FY_MSA_Anchor_List_Price__c}" />
+                        <apex:outputField value="{!nrpBundle.Last_FY_MSA_Price_Override__c}" />
+                        
+                        <apex:outputField value="{!nrpBundle.Final_Last_FY_MSA_Anchor_Price__c}" />
+                        <apex:outputText value="" />
+                        
+                        <apex:outputField value="{!nrpBundle.Subtotal_Fee__c}" />
+                        <apex:outputField value="{!nrpBundle.Air_Onboard_Status__c}" />
+                        
+                        <apex:outputField value="{!nrpBundle.Other_Discount_Type__c}" />
+                        <apex:outputText value="" />
+                        
+                        <apex:outputField value="{!nrpBundle.Override_Discount__c}" />
+                        <apex:outputField value="{!nrpBundle.Drop_Date__c}" />
+                        
+                        <apex:outputField value="{!nrpBundle.Override_Discount_Comments__c}" />
+                        <apex:outputField value="{!nrpBundle.Drop_Reason__c}" />
+                        
+                        <apex:outputField value="{!nrpBundle.Override_Fee__c}" />
+                        <apex:outputField value="{!nrpBundle.Bill_Start_Date__c}" />
+                        
+                        <apex:outputField value="{!nrpBundle.Override_Fee_Comments__c}" />
+                        <apex:outputField value="{!nrpBundle.Bill_End_Date__c}" />
+                        
+                        <apex:outputField value="{!nrpBundle.Final_Fee__c}" />
+                        <apex:outputText value="" />
+                        
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Last Modified By"/>
+                            <apex:outputField value="{!nrpBundle.LastModifiedBy.Name}" />
+                        </apex:pageBlockSectionItem>
+                        <apex:outputField value="{!nrpBundle.LastModifiedDate}" />
+                </apex:pageblockSection>
+            </apex:repeat>
+            
+            <apex:repeat value="{!nprProducts}" var="nprProduct" rendered="{!opportunity.Type='PPF'}">
+                <apex:pageblockSection collapsible="true" title="{!nprProduct.Product__r.Name}" columns="1">
+                    <apex:commandLink action="{!viewDetailsPPF}" rerender="details" onClick="SFDCJumpTo('topofpage')">
+                        <apex:outputText value="{!nprProduct.NPR_Product_Link__c}" escape="false"/>
+                        <apex:param name="nprProdId" value="{!nprProduct.Id}"/> 
+                    </apex:commandLink>
+                </apex:pageblockSection>
+            </apex:repeat>
+            
+<!--            <apex:repeat value="{!oliListList}" var="oliList" rendered="{!opportunity.Type='MSA'}"> -->
+<!--                <apex:pageblockSection collapsible="true" title="{!oliList[0].NPR_Product__r.Product__r.Name}" columns="1" rendered="{!oliList.size>0}"> -->
+<!--                    <apex:repeat value="{!oliList}" var="oli"> -->
+<!--                        <apex:commandLink styleClass="fancybox" action="{!viewDetailsMSA}" rerender="details" onClick="SFDCJumpTo('topofpage')"> -->
+<!--                            <apex:outputText value="{!oli.Opportunity_Product_Link__c}" escape="false"/> -->
+<!--                            <apex:param name="oliId" value="{!oli.Id}"/>  -->
+<!--                        </apex:commandLink> -->
+<!--                    </apex:repeat> -->
+<!--                </apex:pageblockSection> -->
+<!--            </apex:repeat> -->
+
+            <!--  Displays the bundle and the OLI associated where the Include PPF MSA field is checked  -->
+            <apex:outputPanel id="nprProduct_Product_display_msa"><!-- added by suhas outputPanel tag -->
+                <apex:repeat value="{!oliListList}" var="oliList" rendered="{!opportunity.Type='MSA'}">
+                   <apex:outputPanel rendered="{!IF(bundleName != '', NOT(ISNULL(oliList[0])) && 
+                                                CONTAINS(oliList[0].NPR_Product__r.Product__r.Bundle__c, bundleName) , TRUE)}"> 
+                        <apex:pageblockSection collapsible="true" title="{!oliList[0].NPR_Product__r.Product__r.Name}" columns="1" rendered="{!oliList.size>0}">
+                    
+                            <apex:repeat value="{!oliList}" var="oli">
+                                <apex:commandLink styleClass="fancybox" action="{!viewDetailsMSA}" rerender="details" onClick="SFDCJumpTo('topofpage')">
+                                    <apex:outputText value="{!oli.Opportunity_Product_Link__c}" escape="false"/>
+                                    <apex:param name="oliId" value="{!oli.Id}"/> 
+                                </apex:commandLink>
+                            </apex:repeat>
+                         </apex:pageblockSection>
+                     </apex:outputPanel>
+                </apex:repeat>
+            </apex:outputPanel>
+            
+            <!--  Displays only the name of the Products where the Include PPF MSA field is unchecked -->
+            <apex:outputPanel id="nprProduct_Product_msa"><!-- added by suhas outputPanel tag -->
+                <apex:repeat value="{!oliListList}" var="oliList" rendered="{!opportunity.Type='MSA'}">
+                    <apex:outputPanel rendered="{!IF(bundleName != '' && NOT(ISNULL(oliList[0])) 
+                                                  && NOT(ISNULL(oliList[0].NPR_Product__c)) && NOT(ISNULL(oliList[0].NPR_Product__r.Product__r))
+                                                , NOT(CONTAINS(oliList[0].NPR_Product__r.Product__r.Bundle__c, bundleName)), FALSE)}"> 
+                        <apex:pageblockSection collapsible="true" title="{!oliList[0].NPR_Product__r.Product__r.Name}" columns="1" rendered="{!oliList.size>0}">
+                        </apex:pageblockSection>
+                    </apex:outputPanel>
+                </apex:repeat>
+            </apex:outputPanel>
+            
+        </apex:pageBlock>
+        
+        <apex:outputPanel id="details">
+         <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!showDetails}"/>
+            <apex:outputPanel styleClass="custPopup" layout="block" rendered="{!showDetails}">
+                <apex:pageBlock rendered="{!showDetails}">
+                    <apex:pageblockSection collapsible="false" title="{!selectedOlI.Station__r.Name} - {!selectedOlI.NPR_Product__r.Product__r.Name}" columns="2" rendered="{!opportunity.Type='MSA' && selectedOlI.Product2.MSA_Incremental_Type__c=null}">
+                        <apex:outputText value="" />
+                        <apex:outputField value="{!selectedOlI.Interested_In_Product__c}" />
+                            
+                        <apex:outputField value="{!selectedOlI.Adopt_Status__c}" />
+                        <apex:outputField value="{!selectedOlI.Air_Onboard_Date__c}" />
+                        
+                        <apex:outputField value="{!selectedOlI.Adopt_Date__c}" />
+                        <apex:outputField value="{!selectedOlI.Air_Onboard_Status__c}" />
+                        
+                        <apex:outputField value="{!selectedOlI.Drop_Date__c}" />
+                        <apex:outputField value="{!selectedOlI.Drop_Reason__c}" />
+                        
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Last Modified By"/>
+                            <apex:outputField value="{!selectedOlI.LastModifiedBy.Name}" />
+                        </apex:pageBlockSectionItem>
+                        <apex:outputField value="{!selectedOlI.LastModifiedDate}" />
+                        
+                        <apex:commandButton action="{!closeDetails}" value="Close" rerender="details, SummarySection" onClick="removeAnchor()"/>
+                    </apex:pageblockSection>
+                        
+                    <apex:pageblockSection collapsible="false" title="{!selectedOlI.Station__r.Name} - {!selectedOlI.NPR_Product__r.Product__r.Name}" 
+                                           columns="2" 
+                                           rendered="{!opportunity.Type='MSA' && (selectedOlI.Product2.MSA_Incremental_Type__c='Streaming' || selectedOlI.Product2.MSA_Incremental_Type__c='Email')}">
+                        <apex:outputField value="{!selectedOlI.Recurrence_Price__c}" />
+                        <apex:outputText value="" />
+                        
+                        <apex:outputField value="{!selectedOlI.Recurrence_Type__c}" />
+                        <apex:outputField value="{!selectedOlI.Interested_In_Product__c}" />
+                        
+                        <apex:outputField value="{!selectedOlI.Set_up_fee__c}" />
+                        <apex:outputField value="{!selectedOlI.Email_List_Size__c}" rendered="{!selectedOlI.Product2.MSA_Incremental_Type__c='Email'}"/>
+                        <apex:outputText value="" rendered="{!selectedOlI.Product2.MSA_Incremental_Type__c='Streaming'}"/>
+                        
+                        <apex:outputField value="{!selectedOlI.Annualized_Price__c}" />
+                        <apex:outputField value="{!selectedOlI.Adopt_Status__c}" />
+                        
+                        <apex:outputField value="{!selectedOlI.Subtotal_Fee__c}" />
+                        <apex:outputField value="{!selectedOlI.Adopt_Date__c}" />
+                        
+                        <apex:outputField value="{!selectedOlI.Override_Fee__c}" />
+                        <apex:outputField value="{!selectedOlI.Air_Onboard_Date__c}" />
+                        
+                        <apex:outputField value="{!selectedOlI.Override_Fee_Comments__c}" />
+                        <apex:outputField value="{!selectedOlI.Air_Onboard_Status__c}" />
+                        
+                        <apex:outputField value="{!selectedOlI.Final_Price__c}" />
+                        <apex:outputField value="{!selectedOlI.Drop_Date__c}" />
+                        
+                        <apex:outputField value="{!selectedOlI.Bill_Start_Date__c}" />
+                        <apex:outputField value="{!selectedOlI.Drop_Reason__c}" />
+                        
+                        <apex:outputField value="{!selectedOlI.Bill_End_Date__c}" />
+                        <apex:outputText value="" />
+                        
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Last Modified By"/>
+                            <apex:outputField value="{!selectedOlI.LastModifiedBy.Name}" />
+                        </apex:pageBlockSectionItem>
+                        <apex:outputField value="{!selectedOlI.LastModifiedDate}" />
+                        
+                        <apex:commandButton action="{!closeDetails}" value="Close" rerender="details, SummarySection" onClick="removeAnchor()" />   
+                    </apex:pageblockSection>
+                    
+                    <apex:pageblockSection collapsible="false" title="{!selectedNPRProd.Product_Name__c}" columns="2" rendered="{!opportunity.Type='PPF'}">
+                    <!-- Added by Suhas Here the changes are mostly of adding the new fields for Non news and news. 
+                            According to Opportunity New, Repositioned and Relabeled Fields Detailed Design doc -->
+                            <apex:outputField value="{!selectedNPRProd.Include_In_PPF_MSA__c}" />
+                            <apex:outputField value="{!selectedNPRProd.Adopt_Status__c}" />
+                            
+                            <apex:outputField value="{!selectedNPRProd.List_Fee_Annualized__c}" rendered="{!selectedNPRProd.Product__r.PPF_Type__c='Non-News'}" />
+                            <apex:outputField value="{!selectedNPRProd.ATC_Uncapped_Price__c}" rendered="{!selectedNPRProd.Product__r.PPF_Type__c='News'}" />
+                            <apex:outputField value="{!selectedNPRProd.Adopt_Date__c}" />
+                            
+                            <apex:outputField value="{!selectedNPRProd.List_Fee_Prorated__c}" rendered="{!selectedNPRProd.Product__r.PPF_Type__c='Non-News'}" />
+                            <apex:outputField value="{!selectedNPRProd.ATC_Last_FY_Price__c}" rendered="{!selectedNPRProd.Product__r.PPF_Type__c='News'}" />
+                            <apex:outputField value="{!selectedNPRProd.Air_Onboard_Date__c}" />
+                            
+                            <apex:outputField value="{!selectedNPRProd.Discount_Type__c}" rendered="{!selectedNPRProd.Product__r.PPF_Type__c='Non-News'}" />
+                            <apex:outputField value="{!selectedNPRProd.Cap_Percent__c}" rendered="{!selectedNPRProd.Product__r.PPF_Type__c='News'}" />
+                            <apex:outputField value="{!selectedNPRProd.Air_Onboard_Status__c}" />
+                            
+                            <apex:outputField value="{!selectedNPRProd.Discount_Percent__c}" rendered="{!selectedNPRProd.Product__r.PPF_Type__c='Non-News'}" />
+                            <apex:outputField value="{!selectedNPRProd.ATC_Capped_Final_Fee__c}" rendered="{!selectedNPRProd.Product__r.PPF_Type__c='News'}" />
+                            <apex:outputField value="{!selectedNPRProd.Drop_Date__c}" />
+                            
+                            <apex:outputField value="{!selectedNPRProd.Subtotal_Fee__c}" rendered="{!selectedNPRProd.Product__r.PPF_Type__c='Non-News'}" />
+                            <apex:outputField value="{!selectedNPRProd.Accelerated_Cap__c}" rendered="{!selectedNPRProd.Product__r.PPF_Type__c='News'}" />
+                            <apex:outputField value="{!selectedNPRProd.Drop_Reason__c}" />
+                            
+                            <apex:outputField value="{!selectedNPRProd.Other_Discount_Type__c}" rendered="{!selectedNPRProd.Product__r.PPF_Type__c='Non-News'}" />
+                            <apex:outputField value="{!selectedNPRProd.Accelerated_Cap_Comments__c}" rendered="{!selectedNPRProd.Product__r.PPF_Type__c='News'}" />
+                            <apex:outputField value="{!selectedNPRProd.Final_Air_Date__c}" />
+                            
+                            <apex:outputField value="{!selectedNPRProd.Override_Discount__c}" rendered="{!selectedNPRProd.Product__r.PPF_Type__c='Non-News'}" />
+                            <apex:outputField value="{!selectedNPRProd.Discount_Type__c}" rendered="{!selectedNPRProd.Product__r.PPF_Type__c='News'}" />
+                            <apex:outputField value="{!selectedNPRProd.Bill_Start_Date__c}" />
+                            
+                            <apex:outputText value="{!selectedNPRProd.Override_Fee__c}" rendered="{!selectedNPRProd.Product__r.PPF_Type__c='News'}" />
+                            <apex:outputField value="{!selectedNPRProd.Override_Discount_Comments__c}" rendered="{!selectedNPRProd.Product__r.PPF_Type__c='Non-News'}" />
+                            <apex:outputField value="{!selectedNPRProd.Bill_End_Date__c}" />
+
+<!--                             <apex:outputText value="{!selectedNPRProd.Override_Fee__c}" rendered="{!selectedNPRProd.Product__r.PPF_Type__c='News'}" /> -->
+                            <apex:outputField value="{!selectedNPRProd.Override_Fee__c}" rendered="{!selectedNPRProd.Product__r.PPF_Type__c='Non-News'}" />
+                            <apex:outputField value="{!selectedNPRProd.Prior_Year_Price__c}" rendered="{!selectedNPRProd.Product__r.PPF_Type__c='Non-News'}" />
+
+                            <apex:outputText value="{!selectedNPRProd.Override_Fee_Comments__c}" rendered="{!selectedNPRProd.Product__r.PPF_Type__c='News'}" />
+                            <apex:outputField value="{!selectedNPRProd.Override_Fee_Comments__c}" rendered="{!selectedNPRProd.Product__r.PPF_Type__c='Non-News'}" />
+                            <apex:outputField value="{!selectedNPRProd.Prior_Year_Discount__c}" rendered="{!selectedNPRProd.Product__r.PPF_Type__c='Non-News'}" />
+                            <apex:outputText value="" rendered="{!selectedNPRProd.Product__r.PPF_Type__c='News'}" />
+                            
+                            <apex:outputField value="{!selectedNPRProd.Final_Fee__c}" rendered="{!selectedNPRProd.Product__r.PPF_Type__c='News'}" />
+                            <apex:outputField value="{!selectedNPRProd.Delta_Uncapped_and_Final_Price__c}" rendered="{!selectedNPRProd.Product__r.PPF_Type__c='News'}" />
+                            
+                            <apex:outputField value="{!selectedNPRProd.Final_Fee__c}" rendered="{!selectedNPRProd.Product__r.PPF_Type__c='Non-News'}" />
+                            <apex:outputField value="{!selectedNPRProd.Prior_Year_Discount_Type__c}" rendered="{!selectedNPRProd.Product__r.PPF_Type__c='Non-News'}" />
+                            
+                            <apex:outputField value="{!selectedNPRProd.Year_over_Year_Change__c}"/>
+                            <apex:outputField value="{!selectedNPRProd.LastModifiedDate}" />
+                            
+                            <apex:outputText value=""/>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel value="Last Modified By"/>
+                                <apex:outputField value="{!selectedNPRProd.LastModifiedBy.Name}" />
+                            </apex:pageBlockSectionItem>
+                            
+                            <apex:commandButton action="{!closeDetails}" value="Close" rerender="details, SummarySection" onClick="removeAnchor()"/>
+<!--                             <added code ends here> -->
+                    </apex:pageblockSection>
+                </apex:pageBlock>
+            </apex:outputPanel>
+        </apex:outputPanel>
+        
+        <apex:outputPanel id="refreshPopupPanel" styleClass="dialog">
+            <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!showRefreshPopUp}"/>
+            <apex:outputPanel styleClass="custPopup" layout="block" rendered="{!showRefreshPopUp}">
+                <div><apex:outputText value="You are about to perform a pricing refresh. Carry over all existing overrides and discounts?" /></div>
+                <div>
+                    <apex:commandButton action="{!refresh}" value="Yes" rerender="theForm">
+                        <apex:param name="keepOverrides" value="true" />
+                    </apex:commandButton>
+                    <apex:commandButton action="{!refresh}" value="No" rerender="theForm">
+                        <apex:param name="keepOverrides" value="false" />
+                    </apex:commandButton>
+                    <apex:commandButton action="{!closeRefreshPopupPanel}" value="Cancel" />
+                </div>
+            </apex:outputPanel>
+        </apex:outputPanel>
+        
+        <apex:outputPanel id="renewPopupPanel" styleClass="dialog">
+            <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!showRenewPopUp}"/>
+            <apex:outputPanel styleClass="custPopup" layout="block" rendered="{!showRenewPopUp}">
+                <div><apex:outputText value="Are you sure you want to renew this opportunity?" /></div>
+                <div>
+                    <apex:commandButton action="{!renew}" value="Yes" />
+                    <apex:commandButton action="{!closeRenewPopupPanel}" value="No" />
+                </div>
+            </apex:outputPanel>
+        </apex:outputPanel>
+    </apex:form>
+    
+    <apex:relatedList list="OpportunityContactRoles" />
+    <!-- Action Plan -->
+    <apex:relatedList list="R00NR0000000VZZIMA4__r" />
+    <apex:relatedList list="OpenActivities" />
+    <apex:relatedList list="ActivityHistories" />
+    <apex:relatedList list="CombinedAttachments" />
+    <apex:relatedList list="OpportunityHistories" />
+
+     <apex:pageBlock id="hiddenBlock" rendered="false"></apex:pageBlock>
+    
+     <style type="text/css">
+       .custPopup{
+            background-color: white;
+            border-width: 2px;
+            border-style: solid;
+            z-index: 72;
+            left: 50%;
+            padding:10px;
+            position: absolute;
+            /* These are the 3 css properties you will need to change so the popup
+            displays in the center of the screen. First set the width. Then set
+            margin-left to negative half of what the width is. You can add
+            the height property for a fixed size pop up if you want.*/
+            width: 600px;
+            margin-left: -300px;
+            top:20px;
+        }
+        .popupBackground{
+            background-color:black;
+            opacity: 0.20;
+            filter: alpha(opacity = 20);
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 71;
+        }
+    </style>
+
+
+</apex:page>
